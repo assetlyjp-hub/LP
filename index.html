@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assetly｜備えの相談窓口</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:    #16162a;
+    --deep:   #0c0c1a;
+    --gold:   #b8963e;
+    --gold2:  #d4ae5a;
+    --cream:  #f8f4ed;
+    --warm:   #f1e9d8;
+    --muted:  #72728a;
+    --border: rgba(184,150,62,0.18);
+    --green:  #2d6a4f;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    font-family:'Noto Sans JP', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    display: flex; align-items:center; justify-content:space-between;
+    padding: 18px 56px;
+    background: rgba(12,12,26,0.93);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand { display:flex; align-items:baseline; gap:10px; }
+  .nav-logo {
+    font-family:'Cormorant Garamond', serif;
+    font-size:22px; font-weight:600; color:var(--gold); letter-spacing:.12em;
+  }
+  .nav-tagline {
+    font-family:'Noto Serif JP', serif;
+    font-size:11px; font-weight:300; color:rgba(255,255,255,.35); letter-spacing:.06em;
+  }
+  .nav-links { display:flex; gap:32px; list-style:none; }
+  .nav-links a {
+    font-size:11px; letter-spacing:.1em; color:rgba(255,255,255,.4);
+    text-decoration:none; transition:color .2s; cursor:pointer;
+  }
+  .nav-links a:hover { color:var(--gold); }
+  .nav-links a.active { color:var(--gold); }
+  .nav-btn {
+    background:var(--gold); color:var(--deep);
+    border:none; padding:10px 22px;
+    font-family:'Noto Sans JP', sans-serif; font-size:11px; font-weight:500;
+    letter-spacing:.08em; cursor:pointer; transition:background .2s;
+  }
+  .nav-btn:hover { background:var(--gold2); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height:100vh; padding-top:64px;
+    background:var(--deep);
+    display:grid; grid-template-columns:1fr 1fr;
+    position:relative; overflow:hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 55% 75% at 78% 42%, rgba(184,150,62,.07) 0%, transparent 65%),
+      radial-gradient(ellipse 35% 55% at 12% 80%, rgba(45,106,79,.05) 0%, transparent 60%);
+    pointer-events:none;
+  }
+
+  /* grain overlay */
+  .hero::after {
+    content:''; position:absolute; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+    pointer-events:none; opacity:.6;
+  }
+
+  .hero-left {
+    padding:80px 56px 80px 72px;
+    display:flex; flex-direction:column; justify-content:center;
+    position:relative; z-index:2;
+  }
+
+  .hero-eyebrow {
+    display:flex; align-items:center; gap:14px; margin-bottom:36px;
+    animation: fadeUp .5s .0s ease both;
+  }
+  .eyebrow-line { width:28px; height:1px; background:var(--gold); }
+  .eyebrow-text { font-size:9px; letter-spacing:.35em; color:var(--gold); font-weight:300; text-transform:uppercase; }
+
+  .hero-brand-sub {
+    font-family:'Noto Serif JP', serif;
+    font-size:13px; font-weight:300;
+    color:rgba(255,255,255,.35); letter-spacing:.15em;
+    margin-bottom:16px;
+    animation: fadeUp .5s .08s ease both;
+  }
+
+  .hero-h1 {
+    font-family:'Noto Serif JP', serif;
+    font-size:clamp(28px,3.2vw,46px); font-weight:600; color:#fff;
+    line-height:1.65; margin-bottom:24px;
+    animation: fadeUp .5s .16s ease both;
+  }
+  .hero-h1 .gold { color:var(--gold); }
+  .hero-h1 .thin { font-weight:300; color:rgba(255,255,255,.7); }
+
+  .hero-lead {
+    font-family:'Noto Serif JP', serif;
+    font-size:clamp(12px,1.3vw,15px); font-weight:300;
+    color:rgba(255,255,255,.45); line-height:2.2;
+    padding-left:16px; border-left:2px solid rgba(184,150,62,.4);
+    margin-bottom:48px;
+    animation: fadeUp .5s .24s ease both;
+  }
+
+  .hero-ctas {
+    display:flex; flex-direction:column; gap:10px; width:fit-content;
+    animation: fadeUp .5s .32s ease both;
+  }
+  .btn-line, a.btn-line {
+    display:flex; align-items:center; gap:10px;
+    background:#06C755; color:#fff; border:none;
+    padding:18px 40px; font-size:13px; font-weight:500;
+    letter-spacing:.06em; cursor:pointer; text-decoration:none;
+    font-family:'Noto Sans JP', sans-serif; transition:opacity .2s;
+  }
+  .btn-line:hover, a.btn-line:hover { opacity:.86; }
+  .btn-ghost, a.btn-ghost {
+    display:flex; align-items:center; gap:10px;
+    background:transparent; color:rgba(255,255,255,.5); border:1px solid rgba(255,255,255,.14);
+    padding:14px 40px; font-size:12px; font-weight:300;
+    letter-spacing:.08em; cursor:pointer; text-decoration:none;
+    font-family:'Noto Sans JP', sans-serif; transition:all .2s;
+  }
+  .btn-ghost:hover, a.btn-ghost:hover { border-color:var(--gold); color:var(--gold); }
+  .hero-note { margin-top:14px; font-size:10px; color:rgba(255,255,255,.2); letter-spacing:.06em; animation: fadeUp .5s .38s ease both; }
+
+  /* hero right */
+  .hero-right {
+    display:flex; align-items:center; justify-content:center;
+    padding:80px 48px 80px 16px; position:relative; z-index:2;
+    animation: fadeUp .5s .4s ease both;
+  }
+
+  .worry-card { width:100%; max-width:360px; }
+  .worry-head {
+    background:rgba(184,150,62,.1); border:1px solid var(--border);
+    border-bottom:none; padding:18px 24px;
+  }
+  .worry-head-label { font-size:9px; letter-spacing:.3em; color:var(--gold); margin-bottom:6px; text-transform:uppercase; }
+  .worry-head-text { font-family:'Noto Serif JP', serif; font-size:13px; font-weight:400; color:rgba(255,255,255,.7); line-height:1.7; }
+
+  .worry-items { border:1px solid var(--border); }
+  .worry-row {
+    padding:16px 24px; border-bottom:1px solid rgba(255,255,255,.05);
+    display:flex; align-items:flex-start; gap:12px;
+  }
+  .worry-row:last-child { border-bottom:none; }
+  .worry-dot {
+    width:6px; height:6px; border-radius:50%;
+    background:var(--gold); flex-shrink:0; margin-top:6px; opacity:.6;
+  }
+  .worry-txt { font-family:'Noto Serif JP', serif; font-size:12px; font-weight:300; color:rgba(255,255,255,.65); line-height:1.75; }
+
+  .worry-foot {
+    background:var(--gold); padding:16px 24px; text-align:center;
+    font-family:'Noto Serif JP', serif; font-size:12px; font-weight:500; color:var(--deep);
+  }
+
+  /* ── TRUST STRIP ── */
+  .trust {
+    background:var(--gold); padding:16px 72px;
+    display:flex; gap:40px; align-items:center; justify-content:center;
+  }
+  .trust-item { display:flex; align-items:center; gap:8px; white-space:nowrap; }
+  .trust-num { font-family:'Cormorant Garamond', serif; font-size:24px; font-weight:600; color:var(--deep); line-height:1; }
+  .trust-lbl { font-size:10px; color:rgba(12,12,26,.6); font-weight:500; line-height:1.5; }
+  .trust-sep { width:1px; height:28px; background:rgba(12,12,26,.12); }
+
+  /* ── SECTION BASE ── */
+  .sec { padding:88px 72px; }
+  .sec-label { display:flex; align-items:center; gap:14px; margin-bottom:40px; }
+  .sec-num { font-family:'Cormorant Garamond', serif; font-size:11px; letter-spacing:.3em; color:var(--gold); }
+  .sec-line { width:36px; height:1px; background:var(--gold); }
+  .sec-en { font-size:9px; letter-spacing:.35em; color:var(--gold); text-transform:uppercase; font-weight:300; }
+  .sec-h2 { font-family:'Noto Serif JP', serif; font-size:clamp(22px,2.8vw,34px); font-weight:600; line-height:1.65; margin-bottom:56px; }
+
+  /* ── TIMING ── */
+  .timing { background:var(--warm); }
+  .timing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; position:relative; }
+  .timing-card { background:#fff; padding:36px 28px; position:relative; transition:transform .2s; }
+  .timing-card:hover { transform:translateY(-3px); }
+  .timing-card.star { background:var(--ink); }
+  .timing-card.star::before {
+    content:'最も効果的なタイミング';
+    position:absolute; top:-26px; left:0; right:0;
+    text-align:center; font-size:9px; color:var(--gold); letter-spacing:.12em;
+  }
+  .tc-phase { font-size:9px; letter-spacing:.3em; color:var(--gold); text-transform:uppercase; margin-bottom:14px; }
+  .tc-title { font-family:'Noto Serif JP', serif; font-size:17px; font-weight:600; line-height:1.5; margin-bottom:10px; }
+  .timing-card:not(.star) .tc-title { color:var(--ink); }
+  .timing-card.star .tc-title { color:#fff; }
+  .tc-body { font-size:11px; line-height:2; font-weight:300; }
+  .timing-card:not(.star) .tc-body { color:var(--muted); }
+  .timing-card.star .tc-body { color:rgba(255,255,255,.5); }
+  .tc-tag { display:inline-block; margin-top:18px; font-size:9px; letter-spacing:.15em; padding:3px 10px; }
+  .timing-card:not(.star) .tc-tag { border:1px solid #ddd; color:var(--muted); }
+  .timing-card.star .tc-tag { background:var(--gold); color:var(--deep); font-weight:600; }
+
+  /* ── WHY ── */
+  .why { background:var(--ink); }
+  .why-grid { display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start; }
+  .why-statement {
+    font-family:'Noto Serif JP', serif;
+    font-size:clamp(18px,2.2vw,26px); font-weight:400; color:#fff; line-height:2; margin-bottom:28px;
+  }
+  .why-statement em { color:var(--gold); font-style:normal; }
+  .why-detail { font-size:12px; color:rgba(255,255,255,.4); line-height:2.3; font-weight:300; padding-left:16px; border-left:1px solid var(--border); }
+  .why-points { display:flex; flex-direction:column; gap:2px; }
+  .why-point { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); padding:24px; display:flex; gap:18px; }
+  .wp-num { font-family:'Cormorant Garamond', serif; font-size:28px; font-weight:300; color:var(--gold); opacity:.45; line-height:1; flex-shrink:0; }
+  .wp-h4 { font-family:'Noto Serif JP', serif; font-size:13px; font-weight:500; color:#fff; margin-bottom:6px; line-height:1.5; }
+  .wp-p { font-size:11px; color:rgba(255,255,255,.38); line-height:1.9; }
+
+  /* ── SERVICE ── */
+  .service { background:var(--cream); }
+  .svc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+  .svc-card { background:#fff; padding:40px 28px; border-top:3px solid transparent; transition:border-color .3s, transform .2s; }
+  .svc-card:hover { border-top-color:var(--gold); transform:translateY(-3px); }
+  .svc-card.feat { background:var(--ink); border-top-color:var(--gold); }
+  .svc-n { font-family:'Cormorant Garamond', serif; font-size:40px; font-weight:300; color:rgba(184,150,62,.18); line-height:1; margin-bottom:16px; }
+  .svc-h { font-family:'Noto Serif JP', serif; font-size:16px; font-weight:600; margin-bottom:12px; line-height:1.55; }
+  .svc-card:not(.feat) .svc-h { color:var(--ink); }
+  .svc-card.feat .svc-h { color:#fff; }
+  .svc-p { font-size:11px; line-height:2.1; font-weight:300; }
+  .svc-card:not(.feat) .svc-p { color:var(--muted); }
+  .svc-card.feat .svc-p { color:rgba(255,255,255,.45); }
+  .svc-tag { display:inline-block; margin-top:20px; font-size:9px; letter-spacing:.2em; padding:3px 10px; }
+  .svc-card:not(.feat) .svc-tag { border:1px solid #ddd; color:var(--muted); }
+  .svc-card.feat .svc-tag { background:var(--gold); color:var(--deep); }
+
+  /* ── FLOW ── */
+  .flow { background:var(--warm); }
+  .flow-steps { display:grid; grid-template-columns:repeat(5,1fr); gap:0; position:relative; margin-top:0; }
+  .flow-steps::before {
+    content:''; position:absolute;
+    top:34px; left:10%; right:10%; height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity:.25; z-index:0;
+  }
+  .flow-step { text-align:center; padding:0 8px; position:relative; z-index:1; }
+  .flow-circle {
+    width:68px; height:68px; border-radius:50%;
+    border:1px solid rgba(184,150,62,.3); background:var(--warm);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 18px;
+    font-family:'Cormorant Garamond', serif; font-size:18px; color:var(--gold);
+    transition:all .2s;
+  }
+  .flow-step:hover .flow-circle { background:var(--gold); color:var(--deep); border-color:var(--gold); }
+  .flow-h { font-family:'Noto Serif JP', serif; font-size:12px; font-weight:600; color:var(--ink); margin-bottom:6px; line-height:1.5; }
+  .flow-p { font-size:10px; color:var(--muted); line-height:1.8; }
+
+  /* ── PERSONA ── */
+  .persona { background:#fff; }
+  .persona-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; }
+  .persona-card { background:var(--cream); padding:40px 36px; position:relative; overflow:hidden; }
+  .persona-card::before {
+    content:attr(data-bg); position:absolute; bottom:-10px; right:16px;
+    font-family:'Cormorant Garamond', serif; font-size:80px; font-weight:300;
+    color:rgba(184,150,62,.07); line-height:1; pointer-events:none;
+  }
+  .p-tag { display:inline-block; border:1px solid var(--gold); color:var(--gold); font-size:9px; letter-spacing:.2em; padding:3px 10px; margin-bottom:16px; text-transform:uppercase; }
+  .p-who { font-family:'Noto Serif JP', serif; font-size:18px; font-weight:600; color:var(--ink); margin-bottom:4px; }
+  .p-age { font-size:11px; color:var(--muted); margin-bottom:22px; }
+  .p-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .p-list li { font-family:'Noto Serif JP', serif; font-size:12px; color:var(--ink); line-height:1.75; font-weight:300; padding-left:16px; position:relative; }
+  .p-list li::before { content:'—'; position:absolute; left:0; color:var(--gold); font-family:'Cormorant Garamond', serif; }
+
+  /* ── CTA ── */
+  .cta-sec { background:var(--deep); padding:108px 72px; text-align:center; position:relative; overflow:hidden; }
+  .cta-sec::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse 55% 80% at 50% 50%, rgba(184,150,62,.07) 0%, transparent 68%);
+    pointer-events:none;
+  }
+  .cta-sec > * { position:relative; z-index:1; }
+  .cta-over { font-family:'Cormorant Garamond', serif; font-size:11px; letter-spacing:.5em; color:var(--gold); margin-bottom:24px; text-transform:uppercase; }
+  .cta-h2 { font-family:'Noto Serif JP', serif; font-size:clamp(24px,3.2vw,40px); font-weight:500; color:#fff; line-height:1.75; margin-bottom:18px; }
+  .cta-h2 em { color:var(--gold); font-style:normal; }
+  .cta-body { font-size:13px; color:rgba(255,255,255,.38); line-height:2.3; font-weight:300; max-width:500px; margin:0 auto 52px; }
+  .cta-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:24px; }
+  .btn-line-lg, a.btn-line-lg {
+    display:flex; align-items:center; gap:10px;
+    background:#06C755; color:#fff; border:none;
+    padding:20px 52px; font-size:14px; font-weight:500; letter-spacing:.06em;
+    cursor:pointer; text-decoration:none; font-family:'Noto Sans JP', sans-serif; transition:opacity .2s;
+  }
+  .btn-line-lg:hover, a.btn-line-lg:hover { opacity:.85; }
+  .btn-outline-lg {
+    display:flex; align-items:center; gap:10px;
+    background:transparent; color:rgba(255,255,255,.5); border:1px solid rgba(255,255,255,.14);
+    padding:20px 40px; font-size:12px; font-weight:300; letter-spacing:.08em;
+    cursor:pointer; font-family:'Noto Sans JP', sans-serif; transition:all .2s;
+  }
+  .btn-outline-lg:hover { border-color:var(--gold); color:var(--gold); }
+  .cta-note { font-size:10px; color:rgba(255,255,255,.18); letter-spacing:.1em; }
+
+  /* ── FOOTER ── */
+  footer {
+    background:var(--deep); padding:36px 72px;
+    display:flex; justify-content:space-between; align-items:center;
+    border-top:1px solid var(--border);
+  }
+  .foot-brand { display:flex; align-items:baseline; gap:8px; }
+  .foot-logo { font-family:'Cormorant Garamond', serif; font-size:16px; font-weight:600; color:var(--gold); }
+  .foot-service { font-size:11px; color:rgba(255,255,255,.25); }
+  footer p { font-size:10px; color:rgba(255,255,255,.15); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(20px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo">Assetly</div>
+    <div class="nav-tagline">備えの相談窓口</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#timing">なぜ今？</a></li>
+    <li><a href="#service">サービス</a></li>
+    <li><a href="#flow">ご相談の流れ</a></li>
+    <li><a href="#persona">こんな方へ</a></li>
+  </ul>
+  <a href="https://lin.ee/nYCXYMV" target="_blank" class="nav-btn" style="display:flex;align-items:center;gap:7px;text-decoration:none;">
+    <svg width="14" height="14" viewBox="0 0 40 40" fill="#0c0c1a"><path d="M20 4C11.2 4 4 10.4 4 18.2c0 6.4 4.4 11.8 10.6 13.8l-1.4 4.6 5.2-3.4c.5.1 1 .1 1.6.1 8.8 0 16-6.4 16-14.2S28.8 4 20 4z"/></svg>
+    LINEで無料相談する
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <div class="eyebrow-line"></div>
+      <div class="eyebrow-text">Assetly — Real Estate Inheritance Consultation</div>
+    </div>
+
+    <div class="hero-brand-sub">実家・空き家・相続の不動産相談</div>
+
+    <h1 class="hero-h1">
+      「親の不動産、<br>
+      どうなるんだろう」——<br>
+      <span class="gold">その不安</span>、今動くほど<br>
+      <span class="thin">選択肢は多い。</span>
+    </h1>
+
+    <p class="hero-lead">
+      相続が発生してから動いても、手遅れなことがあります。<br>
+      不動産×相続のプロが「今できる備え」を一緒に考えます。
+    </p>
+
+    <div class="hero-ctas">
+      <a href="https://lin.ee/nYCXYMV" target="_blank" class="btn-line">
+        <svg width="17" height="17" viewBox="0 0 40 40" fill="white"><path d="M20 4C11.2 4 4 10.4 4 18.2c0 6.4 4.4 11.8 10.6 13.8l-1.4 4.6 5.2-3.4c.5.1 1 .1 1.6.1 8.8 0 16-6.4 16-14.2S28.8 4 20 4z"/></svg>
+        LINEで無料相談する
+      </a>
+      <a href="#service" class="btn-ghost" style="text-decoration:none;">サービス内容を見る →</a>
+    </div>
+    <p class="hero-note">※ 完全無料・売り込みなし・秘密厳守・オンライン対応</p>
+  </div>
+
+  <div class="hero-right">
+    <div class="worry-card">
+      <div class="worry-head">
+        <div class="worry-head-label">For You</div>
+        <div class="worry-head-text">こんな「なんとなくの不安」はありませんか？</div>
+      </div>
+      <div class="worry-items">
+        <div class="worry-row"><div class="worry-dot"></div><div class="worry-txt">親がアパートや土地を持っているが、相続税がいくらかかるか分からない</div></div>
+        <div class="worry-row"><div class="worry-dot"></div><div class="worry-txt">兄弟がいるが、相続で揉めないか不安</div></div>
+        <div class="worry-row"><div class="worry-dot"></div><div class="worry-txt">親が高齢になり、実家や土地を将来どうするか考え始めた</div></div>
+        <div class="worry-row"><div class="worry-dot"></div><div class="worry-txt">賃貸経営を続けるべきか、売るべきか判断できない</div></div>
+        <div class="worry-row"><div class="worry-dot"></div><div class="worry-txt">親に「相続の話」を切り出せずにいる</div></div>
+      </div>
+      <div class="worry-foot">一つでも当てはまるなら、今が動き時です</div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust">
+  <div class="trust-item"><span class="trust-num">500+</span><span class="trust-lbl">相談実績</span></div>
+  <div class="trust-sep"></div>
+  <div class="trust-item"><span class="trust-num">20+</span><span class="trust-lbl">連携専門家</span></div>
+  <div class="trust-sep"></div>
+  <div class="trust-item"><span class="trust-num">0円</span><span class="trust-lbl">初回相談料</span></div>
+  <div class="trust-sep"></div>
+  <div class="trust-item"><span class="trust-num">全国</span><span class="trust-lbl">オンライン対応</span></div>
+</div>
+
+<!-- TIMING -->
+<section id="timing" class="sec timing">
+  <div class="sec-label">
+    <span class="sec-num">01</span>
+    <div class="sec-line"></div>
+    <span class="sec-en">Why Now</span>
+  </div>
+  <h2 class="sec-h2">相続対策は、<br>「早すぎる」ことはない</h2>
+  <div class="timing-grid">
+    <div class="timing-card">
+      <div class="tc-phase">Phase 01</div>
+      <div class="tc-title">相続発生の<br>5〜10年前</div>
+      <p class="tc-body">選択肢が最も多い時期。不動産の組み換え・節税対策・賃貸活用など、時間をかけた最適解を選べる。</p>
+      <span class="tc-tag">今すぐ動ける</span>
+    </div>
+    <div class="timing-card star">
+      <div class="tc-phase">Phase 02</div>
+      <div class="tc-title">相続発生の<br>1〜3年前</div>
+      <p class="tc-body">遺言書の作成・生前贈与・家族間の合意形成が急務に。専門家との連携が特に重要な時期。</p>
+      <span class="tc-tag">最も効果的</span>
+    </div>
+    <div class="timing-card">
+      <div class="tc-phase">Phase 03</div>
+      <div class="tc-title">相続発生後</div>
+      <p class="tc-body">手続きに追われ、冷静な判断が難しい。選択肢も限られ、税負担が想定を超えるケースも多い。</p>
+      <span class="tc-tag">選択肢が減る</span>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="why" class="sec why">
+  <div class="sec-label">
+    <span class="sec-num">02</span>
+    <div class="sec-line"></div>
+    <span class="sec-en">Our Approach</span>
+  </div>
+  <div class="why-grid">
+    <div>
+      <p class="why-statement">
+        司法書士でも税理士でも<br>不動産会社でもない——<br>
+        <em>「全体を見て、最初に<br>相談できる場所」</em>を<br>
+        Assetlyは作りました。
+      </p>
+      <p class="why-detail">
+        相続×不動産の問題は、登記・税務・不動産活用が複雑に絡み合います。それぞれの専門家は縦割りで動くため、全体最適を考えてくれる人がいないのが現状です。私たちは不動産×相続の実務経験をもとに、あなたの状況を整理し、最適な専門家と連携します。
+      </p>
+    </div>
+    <div class="why-points">
+      <div class="why-point">
+        <div class="wp-num">01</div>
+        <div><div class="wp-h4">不動産×相続の実務経験者が対応</div><p class="wp-p">仲介・仕入れ・賃貸経営・相続対策の建築受注まで、不動産の全領域をカバーする実務家が直接担当します。</p></div>
+      </div>
+      <div class="why-point">
+        <div class="wp-num">02</div>
+        <div><div class="wp-h4">税理士・司法書士とのネットワーク</div><p class="wp-p">信頼できる専門家と連携し、相続税・登記・不動産活用までワンストップでサポートします。</p></div>
+      </div>
+      <div class="why-point">
+        <div class="wp-num">03</div>
+        <div><div class="wp-h4">売り込みなし・中立的な立場</div><p class="wp-p">「売る・貸す・建てる・何もしない」すべての選択肢をフラットに提示。あなたの最適解を一緒に探します。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICE -->
+<section id="service" class="sec service">
+  <div class="sec-label">
+    <span class="sec-num">03</span>
+    <div class="sec-line"></div>
+    <span class="sec-en">Services</span>
+  </div>
+  <h2 class="sec-h2" style="color:var(--ink)">「備え」から「出口」まで、<br>すべてお任せください</h2>
+  <div class="svc-grid">
+    <div class="svc-card">
+      <div class="svc-n">01</div>
+      <h3 class="svc-h">相続前の<br>資産整理・診断</h3>
+      <p class="svc-p">不動産の現状把握から相続税の試算、最適な活用方針まで。「今何をすべきか」を整理します。</p>
+      <span class="svc-tag">ASSET DIAGNOSIS</span>
+    </div>
+    <div class="svc-card feat">
+      <div class="svc-n">02</div>
+      <h3 class="svc-h">専門家との<br>ワンストップ連携</h3>
+      <p class="svc-p">税理士・司法書士・FPとの橋渡しをすることで、相続全体を一本化。窓口はひとつで完結します。</p>
+      <span class="svc-tag">EXPERT NETWORK</span>
+    </div>
+    <div class="svc-card">
+      <div class="svc-n">03</div>
+      <h3 class="svc-h">不動産の売却・<br>活用・建築サポート</h3>
+      <p class="svc-p">都心1棟物件から地方の空き家まで。売却・賃貸・アパート建築など、出口まで一貫して対応します。</p>
+      <span class="svc-tag">ASSET MANAGEMENT</span>
+    </div>
+  </div>
+</section>
+
+<!-- FLOW -->
+<section id="flow" class="sec flow">
+  <div class="sec-label">
+    <span class="sec-num">04</span>
+    <div class="sec-line"></div>
+    <span class="sec-en">How It Works</span>
+  </div>
+  <h2 class="sec-h2" style="color:var(--ink)">相談から解決まで、<br>5つのステップ</h2>
+  <div class="flow-steps">
+    <div class="flow-step"><div class="flow-circle">01</div><div class="flow-h">LINEで<br>無料相談</div><p class="flow-p">メッセージを<br>送るだけでOK</p></div>
+    <div class="flow-step"><div class="flow-circle">02</div><div class="flow-h">初回ヒアリング<br>（オンライン可）</div><p class="flow-p">現状と不安を<br>丁寧にお聞きします</p></div>
+    <div class="flow-step"><div class="flow-circle">03</div><div class="flow-h">資産診断・<br>課題整理</div><p class="flow-p">不動産の状況を<br>可視化します</p></div>
+    <div class="flow-step"><div class="flow-circle">04</div><div class="flow-h">専門家との<br>連携開始</div><p class="flow-p">税理士・司法書士を<br>必要に応じてご紹介</p></div>
+    <div class="flow-step"><div class="flow-circle">05</div><div class="flow-h">売却・活用・<br>管理へ</div><p class="flow-p">不動産の出口まで<br>一貫してサポート</p></div>
+  </div>
+</section>
+
+<!-- PERSONA -->
+<section id="persona" class="sec persona">
+  <div class="sec-label">
+    <span class="sec-num">05</span>
+    <div class="sec-line"></div>
+    <span class="sec-en">For You</span>
+  </div>
+  <h2 class="sec-h2" style="color:var(--ink)">こんな方に<br>ご相談いただいています</h2>
+  <div class="persona-grid">
+    <div class="persona-card" data-bg="親">
+      <div class="p-tag">親世代・60〜70代</div>
+      <div class="p-who">不動産を持つ親御さん</div>
+      <div class="p-age">土地・アパート・実家を所有されている方</div>
+      <ul class="p-list">
+        <li>子どもに迷惑をかけたくないので、生前に整理しておきたい</li>
+        <li>相続税がどのくらいかかるか把握していない</li>
+        <li>アパートを持っているが、子どもに経営を任せていいか不安</li>
+        <li>遺言書を書いた方がいいか迷っている</li>
+      </ul>
+    </div>
+    <div class="persona-card" data-bg="子">
+      <div class="p-tag">子世代・40〜50代</div>
+      <div class="p-who">親の相続が気になり始めた方</div>
+      <div class="p-age">親の不動産が「いつか問題になる」と感じている方</div>
+      <ul class="p-list">
+        <li>親が高齢になり、そろそろ相続の話をしなければと思っている</li>
+        <li>兄弟がいて、揉めないか心配</li>
+        <li>親の不動産の価値や名義がよく分からない</li>
+        <li>相続税を払えるか、現金が足りるか不安</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="cta-over">Free Consultation</div>
+  <h2 class="cta-h2">「なんとなく不安」のうちに、<br><em>動いておく</em>のが正解です。</h2>
+  <p class="cta-body">相続の問題は、発生してから動いても手遅れなことがあります。今なら選択肢は多く、時間もある。まず話すだけでいい。</p>
+  <div class="cta-btns">
+    <a href="https://lin.ee/nYCXYMV" target="_blank" class="btn-line-lg">
+      <svg width="17" height="17" viewBox="0 0 40 40" fill="white"><path d="M20 4C11.2 4 4 10.4 4 18.2c0 6.4 4.4 11.8 10.6 13.8l-1.4 4.6 5.2-3.4c.5.1 1 .1 1.6.1 8.8 0 16-6.4 16-14.2S28.8 4 20 4z"/></svg>
+      LINEで無料相談する
+    </a>
+  </div>
+  <p class="cta-note">完全無料・秘密厳守・売り込みなし・オンライン対応</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-brand">
+    <div class="foot-logo">Assetly</div>
+    <div class="foot-service">備えの相談窓口</div>
+  </div>
+  <p>© 2025 Assetly All rights reserved.</p>
+  <p>プライバシーポリシー｜特定商取引法に基づく表記</p>
+</footer>
+
+<script>
+  // スムーススクロール（navの高さ分オフセット）
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (!target) return;
+      const navH = document.querySelector('nav').offsetHeight;
+      const top = target.getBoundingClientRect().top + window.scrollY - navH - 16;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+
+  // スクロール位置に応じてアクティブなリンクをハイライト
+  const sections = ['timing','why','service','flow','persona'];
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+</script>
+</body>
+</html>
